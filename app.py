@@ -4,8 +4,12 @@ import random
 import os
 import datetime
 
-# 读取xm.txt文件中的名字
-def read_names():
+# 读取或创建 xm.txt 文件
+def read_or_create_names():
+    if not os.path.exists('xm.txt'):
+        with open('xm.txt', 'w', encoding='utf-8') as file:
+            file.write("张三\n李四\n王五\n")
+        messagebox.showinfo("提示", "未找到 xm.txt 文件，已创建并写入默认内容。请修改 xm.txt 文件以添加更多名字。")
     with open('xm.txt', 'r', encoding='utf-8') as file:
         names = file.readlines()
     return [name.strip() for name in names]
@@ -42,7 +46,7 @@ def draw_name():
     global names
     global current_name
     if not names:
-        names = read_names()  # 重新读取名字并移除请假的人
+        names = read_or_create_names()  # 重新读取名字并移除请假的人
         names = [name for name in names if name not in skipped_names]
     while True:
         current_name = random.choice(names)
@@ -72,7 +76,7 @@ def mark_absent():
     draw_name()
 
 # 初始化名字列表和当前选中的名字
-names = read_names()
+names = read_or_create_names()
 current_name = ""
 
 # 每次启动时处理 data.txt
